@@ -151,7 +151,7 @@ password: postgres
 
 ### pgAdmin
 http://localhost:5050  
-email: admin@admin.com  
+email: admin@sharif.edu  
 password: admin  
 
 ---
