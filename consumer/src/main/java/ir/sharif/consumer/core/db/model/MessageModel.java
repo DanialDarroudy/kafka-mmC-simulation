@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
+
 
 @Data
 @Entity
@@ -19,11 +21,11 @@ public class MessageModel {
 
     private String payload;
 
-    private long arrivalTime;
+    private Instant arrivalTime;
 
-    private long dequeueTime;
+    private Instant dequeueTime;
 
-    private long finishTime;
+    private Instant finishTime;
 
     private long waitingTimeMs;
 

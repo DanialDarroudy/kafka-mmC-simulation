@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
+import java.time.Instant;
+
 @Component
 @RequiredArgsConstructor
 public class MessageProcessor implements IMessageProcessor {
@@ -22,10 +25,9 @@ public class MessageProcessor implements IMessageProcessor {
     @Override
     public void process(ProcessMessageRequestDto message) {
         var serverId = Thread.currentThread().getName();
-        var dequeueTime = System.currentTimeMillis();
-        var waitingTime = dequeueTime - message.getArrivalTime();
+        var dequeueTime = Instant.now();
+        var waitingTime = Duration.between(message.getArrivalTime(), dequeueTime).toMillis();
         var serviceTime = generateExponential(meanServiceTime);
-        var busyStart = System.currentTimeMillis();
 
         try {
             Thread.sleep(serviceTime);
@@ -33,9 +35,9 @@ public class MessageProcessor implements IMessageProcessor {
             Thread.currentThread().interrupt();
         }
 
-        var finishTime = System.currentTimeMillis();
-        var responseTime = finishTime - message.getArrivalTime();
-        var busyDuration = finishTime - busyStart;
+        var finishTime = Instant.now();
+        var responseTime = Duration.between(message.getArrivalTime(), finishTime).toMillis();
+        var busyDuration = Duration.between(dequeueTime, finishTime).toMillis();
 
         var metricDto = MetricServiceDto.builder()
                 .serverId(serverId)

@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
+
 @Component
 @RequiredArgsConstructor
 public class MessageSender implements IMessageSender {
@@ -18,7 +20,7 @@ public class MessageSender implements IMessageSender {
 
     @Override
     public void send(SendMessageRequestDto dto) {
-        var arrivalTime = System.currentTimeMillis();
+        var arrivalTime = Instant.now();
         var message = new MessageModel(dto.getPayload(), arrivalTime);
         kafkaTemplate.send(topicName, message.getId().toString(), message);
     }
